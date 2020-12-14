@@ -1,17 +1,36 @@
+import 'antd/dist/antd.css';
+import './common.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { LocationProvider } from '@reach/router';
+import { App } from './App';
+import { StateProvider } from './globalState';
+
+const initialState = {
+  searchResults: {
+    hits: [],
+  },
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'SET_SEARCH_RESULTS': {
+      return { ...state, searchResults: action.payload };
+    }
+    case 'CLEAR_SEARCH_RESULTS': {
+      return { ...state, searchResults: initialState.searchResults.hits };
+    }
+
+    default:
+      return state;
+  }
+};
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  <LocationProvider>
+    <StateProvider initialState={initialState} reducer={reducer}>
+      <App />
+    </StateProvider>
+  </LocationProvider>,
+  document.getElementById('root'),
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
